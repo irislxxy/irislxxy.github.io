@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>GRAM：基于知识图谱的表示学习 | IRIS</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-123196783-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.1.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">GRAM：基于知识图谱的表示学习</h1><a id="logo" href="/.">IRIS</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/history/"><i class="fa fa-paw"> 历史</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">GRAM：基于知识图谱的表示学习</h1><div class="post-meta">2021-05-10<span> | </span><span class="category"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span></div><a class="disqus-comment-count" data-disqus-identifier="2021/05/10/gram/" href="/2021/05/10/gram/#disqus_thread"></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%A7%88"><span class="toc-number">1.</span> <span class="toc-text">概览</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">方法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6"><span class="toc-number">2.1.</span> <span class="toc-text">注意力机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%AC%A6%E5%8F%B7"><span class="toc-number">2.2.</span> <span class="toc-text">基本符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B5%8C%E5%85%A5%E5%90%91%E9%87%8F"><span class="toc-number">2.3.</span> <span class="toc-text">嵌入向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E7%A4%BA%E5%BD%A2%E5%BC%8F"><span class="toc-number">2.4.</span> <span class="toc-text">表示形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E6%B5%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.5.</span> <span class="toc-text">预测模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">实验设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE"><span class="toc-number">3.1.</span> <span class="toc-text">数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%AF%84%E4%BC%B0"><span class="toc-number">4.</span> <span class="toc-text">方法评估</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD"><span class="toc-number">4.1.</span> <span class="toc-text">模型性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E9%80%9F%E5%BA%A6"><span class="toc-number">4.2.</span> <span class="toc-text">计算速度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%A7%A3%E9%87%8A%E6%80%A7"><span class="toc-number">4.3.</span> <span class="toc-text">可解释性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">5.</span> <span class="toc-text">代码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87"><span class="toc-number">5.1.</span> <span class="toc-text">数据准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E5%9B%BE"><span class="toc-number">5.2.</span> <span class="toc-text">构建图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E5%9B%BE-1"><span class="toc-number">5.3.</span> <span class="toc-text">构建图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B5%8C%E5%85%A5%E5%90%91%E9%87%8F-1"><span class="toc-number">5.4.</span> <span class="toc-text">嵌入向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="toc-number">5.5.</span> <span class="toc-text">模型训练</span></a></li></ol></li></ol></div></div><div class="post-content"><p>《GRAM: Graph-based Attention Model for Healthcare Representation Learning》</p>
+<h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>深度学习模型在医疗领域的应用面临着两个问题：</p>
+<ol>
+<li>数据不足</li>
+<li>解释性：通过深度学习模型学到的表示与医学知识不匹配</li>
+</ol>
+<p>医疗保健数据（EHR等）的快速增长，促使人们使用预测模型来改善对患者的护理。深度学习在预测任务中有着很好的表现，但面对罕见病的预测是困难的，因为它们在训练集中的出现频率小导致学习机会少。<br>这个问题可以通过引入医学本体解决，目前可以使用的医学本体有ICD、CCS、SNOMED-CT等。医学本体中彼此接近的节点（即医学概念）很可能与相似的患者相关联，从而使我们能够在它们之间传递知识。因此，当我们缺乏足够的数据以用于本体中的节点来训练深度学习模型时，正确使用医学本体将是有帮助的。<br>本文提出了GRAM（Graph-based Attention Model）方法。该方法首先通过注意力机制引入医学本体知识，学习医学概念的高质量表示形式；再将这些表示形式和患者病历相结合，融入到深度学习模型中以获得更准确的预测。<br>引入的外部知识图谱是一个有向无环图（DAG），每个节点的父节点表示了一种相关但更宽泛的定义或概念。当医疗编码信息稀少或者缺失时，就可以考虑使用更宽泛的定义。而注意力模型是用来判断从叶子节点到根结点上所有节点对预测任务的贡献度。</p>
+<h1 id="方法原理"><a href="#方法原理" class="headerlink" title="方法原理"></a>方法原理</h1><h2 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h2><p>从上到下为父节点-子节点，节点大小代表收到的注意力多少。<br>a. Other pneumothorax (ICD9 512.89) 很少观察到，只有5个同胞，在这种情况下，大多数信息都来自最高祖先。<br>b. Temporomandibular joint disorders &amp; articular disc disorder (ICD9 524.63) 很少观察到，但有139个同胞，在这种情况下，其父级会受到更多关注，因为它会汇总所有子级的样本以学习更准确的表示形式。同时，该疾病本身也受到了更多的关注，以便于与众多同胞更容易地区分开。<br>c. Unspecified essential hypertension (ICD9 401.9) 经常观察到，但只有2个同胞，在这种情况下，GRAM会非常注意叶子。<br>d. Need for prophylactic vaccination and inoculation against influenza (ICD9 V04.81) 经常观察到，并且有103个同胞，在这种情况下，注意力行为与b的情况非常相似，但因为同胞较少，注意力向叶子略有转移。</p>
+<h2 id="基本符号"><a href="#基本符号" class="headerlink" title="基本符号"></a>基本符号</h2><p>整个EHR中的诊断编码记录为c1，c2，…，c|C| ∈C的集合，总共有|C|中诊断编码。<br>每个患者的病历记录可以看作是多次就诊，即V1，…，VT, 而每次就诊中又包含着一系列的诊断编码，C的子集。Vt可以表示为二进制向量，xt∈{0，1}|C|，其中第i个元素代表这个患者的这次就诊是否包含编码ci，包含为1，反之为0。<br>Knowledge DAG是以DAG的形式表示的医学概念的层次结构。这个图中的所有节点为D=C+C’，其中C为叶子结点，由EHR中的所有诊断编码组成，C’为非叶节点（祖先节点）。</p>
+<h2 id="嵌入向量"><a href="#嵌入向量" class="headerlink" title="嵌入向量"></a>嵌入向量</h2><ol>
+<li><p>计算共现矩阵（co-occurrence matrix）<br>在诊断编码列表里加入每个诊断编码的祖先（共同祖先则重复加入），计算每个诊断编码及其祖先出现的次数，共现矩阵(i,j)的值为ci和cj出现的次数的乘积。<br>对所有患者的所有就诊中的所有编码对重复此计算，累加相同编码对的结果，获得共现矩阵。</p>
+</li>
+<li><p>预训练嵌入向量</p>
+</li>
+</ol>
+<h2 id="表示形式"><a href="#表示形式" class="headerlink" title="表示形式"></a>表示形式</h2><p>在上图中，底层实线节点代表叶子结点，上面的虚线节点代表不同层次的父级。<br>每一个节点ci都有一个基础的嵌入向量ei∈Rm，叶子节点的最终表示形式gi为该节点及其祖先的嵌入向量的凸组合：</p>
+<p>αij是注意力权重，用来衡量使用ej来表示gi的信息量权重，通过Softmax function计算:</p>
+<p>f(ei,ej)是ei和ej兼容性的标量值，通过具有单个隐藏层的前馈网络（MLP）计算：</p>
+<h2 id="预测模型"><a href="#预测模型" class="headerlink" title="预测模型"></a>预测模型</h2><ol>
+<li><p>预测模型<br>嵌入矩阵G∈Rmx|C|, gi∈Rm是G中第i列，xt∈R|C|是代表诊断编码在Vt中的出现情况的二进制向量，将xt与G做点乘再通过非线性转换获得vt∈Rm后，作为输入传递进使用RNN的预测模型，预测yt。通过患者前几次的V1，…，VT，预测下一次的Vt+1。</p>
+</li>
+<li><p>损失函数：单个患者的损失函数，实际使用中需要对所有患者取均值。</p>
+</li>
+</ol>
+<h1 id="实验设计"><a href="#实验设计" class="headerlink" title="实验设计"></a>实验设计</h1><h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><ol>
+<li><p>序列预测研究<br>Sutter Palo Alto Medical Foundation (PAMF)：过去18年258K 50～90岁的患者的就诊记录，衡量GRAM在普通成年人的长期就诊记录中的表现。<br>MIMIC-III：过去11年7.5K ICU患者的医疗记录，衡量GRAM在高危患者的短期诊记录中的表现。</p>
+</li>
+<li><p>特定疾病<br>Heart Failure (subset of PAMF)：3.4K 心力衰竭患者 vs 27K 对照组，衡量GRAM在预测特定疾病的发生中的表现。</p>
+</li>
+</ol>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>GRAM：输入序列x1, … , xT，通过嵌入矩阵G进行变换，然后馈送到具有单个隐藏层的GRU。嵌入向量随机初始化。<br>GRAM+：同GRAM，嵌入向量基于co-occurrence初始化。<br>RandomDAG：同GRAM，每个叶概念都有来自CCS多级层次结构的五个随机分配的祖先，测试正确领域知识的作用。<br>RNN：输入xt，通过嵌入矩阵Wemb∈Rk×|C|变换，然后馈送到具有单个隐藏层的GRU。Wemb随机初始化。<br>RNN+：同RNN，Wemb通过仅由叶概念co-occurrence训练的GloVe向量初始化。<br>SimpleRollUP：同RNN，将诊断编码替换为其直接父代的编码，比较GRAM和常见的分组技术。<br>RollUpRare：同RNN，将出现频率低于某个阈值的诊断编码替换为其直接父代的编码，解决不常见的诊断编码。</p>
+<h1 id="方法评估"><a href="#方法评估" class="headerlink" title="方法评估"></a>方法评估</h1><h2 id="模型性能"><a href="#模型性能" class="headerlink" title="模型性能"></a>模型性能</h2><p>对于序列预测研究，计算Accuraccy@k，给定访问Vt，如果目标诊断在top k预测中为1，反之为0。x轴为诊断编码的出现频率。</p>
+<ol>
+<li>预测出现频率较低的诊断编码时，GRAM+优于其他模型。</li>
+<li>MIMIC-III的性能提升更大，其中GRAM+在20-40中优于RNN 10％，这可能是由于MIMIC患者平均就诊史比Sutter患者短，每次就诊收到的编码多，这样的短序列不利于RNN进行学习和预测。</li>
+<li>GRAM+和GRAM的差别显示对于序列诊断预测，初始化ei很重要。</li>
+</ol>
+<p>对于特定疾病预测，计算AUC。</p>
+<ol>
+<li>GRAM和GRAM+的AUC优于RNN+ 1.8%，其余模型3～4%。</li>
+<li>特定疾病预测是预测整个就诊序列的二进制标签，初始化ei的提升有限；而序列诊断预测是预测共现的诊断编码，因此通过初始化嵌入向量注入的共现信息对顺序诊断预测更有利。</li>
+<li>GRAM在数据不足的情况下显示出优异的预测性能。</li>
+</ol>
+<h2 id="计算速度"><a href="#计算速度" class="headerlink" title="计算速度"></a>计算速度</h2><p>对比RNN，<br>对于所有预测任务而言，GRAM多花大约50％的时间来训练单个epoch，这是由于计算所有诊断编码的注意力权重和最终表示gi。<br>GRAM还需要多花大约50％的epochs才能达到有最低验证损失的模型，这是由于优化了额外的MLP模型以生成注意力权重。</p>
+<h2 id="可解释性"><a href="#可解释性" class="headerlink" title="可解释性"></a>可解释性</h2><p>GRAM通过将彼此相似的医学概念分在一起来提供更直观的表示。<br>为了定性评估学习到的医学表示的可解释性，对由GRAM+学习的2000种随机选择的疾病的最终表示gi使用t-SNE：<br>点的颜色代表ICD9诊断编码中的最宽泛描，文本注释代表CCS多级层次结构中的详细疾病类别。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p>原代码使用Python 2.7 <a target="_blank" rel="noopener" href="https://github.com/mp2893/gram%EF%BC%8C%E7%8E%B0%E8%B0%83%E6%95%B4%E4%B8%BA%E4%BD%BF%E7%94%A8Python">https://github.com/mp2893/gram，现调整为使用Python</a> 3.6，并加上中文注释，储存于<a target="_blank" rel="noopener" href="https://github.com/irislxxy/GRAM%E3%80%82">https://github.com/irislxxy/GRAM。</a><br>MIMIC-III数据集：<a target="_blank" rel="noopener" href="https://mimic.physionet.org/gettingstarted/access/%EF%BC%88%E9%9C%80%E5%AE%8C%E6%88%90CITI">https://mimic.physionet.org/gettingstarted/access/（需完成CITI</a> “Data or Specimens Only Research”）<br>CCS知识图谱：Multi-level Clinical Classification Software for ICD-9-CM</p>
+<h2 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h2><p>MIMC<br>处理MIMIC数据集，并为至少两次就诊的患者建立纵向诊断记录。<br>将MIMIC的DIAGNOSES_ICD数据转化为以下形式存储于seqs文件中：<br>[patient1 = [[c1,c2],[c3]], patient2 = …, …]<br>其中诊断编码，由一开始的ICD编码，转为D_ICD和D_EXXX/D_XXX，再分别映射数字，以字典{‘D_272’: 0, ‘D_389’}的形式存储于types文件中。</p>
+<p>process_mimic.py：<br>python process_mimic.py ADMISSIONS.csv DIAGNOSES_ICD.csv <output file><br>python process_mimic.py ADMISSIONS.csv DIAGNOSES_ICD.csv mimic</p>
+<p>自身数据集<br>visit file<br>例如，[[[1,2,3], [4,5,6,7]], [[2,4], [8,3,1], [3]]]，两名患者，第一名患者进行了两次就诊，第二名患者进行了三次就诊。<br>label file<br>和visit file相匹配，如果希望GRAM预测确切的编码，则可以使用visit file作为label file；如果可以合理地进行预测并希望节省时间，则可以将分组的编码用作label file。例如，通过使用CCS，可以将ICD9诊断编码分为283个类别。</p>
+<h2 id="构建图"><a href="#构建图" class="headerlink" title="构建图"></a>构建图</h2><p>在types文件中加入CCS LVL1-4 LABEL和根节点，{‘A_Residual codes; unclassified; all E codes [259. and 260.]’: 1669, ‘A_ROOT’: 1670}</p>
+<h2 id="构建图-1"><a href="#构建图-1" class="headerlink" title="构建图"></a>构建图</h2><p>a. MIMIC中的所有诊断编码为叶子结点。<br>b. 没有层级信息的MIMIC编码的父级为根节点，有层级信息的MIMIC编码的父级为其LVL，以字典{icdCode: [icdCode, rootCode, code1, code2, code3, code4]}的形式存储于Map文件中。<br>c. 重新映射数字-诊断编码（只有mimic编码改变，祖先不变），层级多的映射的数字小。更新seqs和types文件。</p>
+<p>build_trees.py：<br>python build_trees.py ccs_multi_dx_tool_2015.csv <seqs file> <types file> <output path><br>由process_mimic.py生成<br>python build_trees.py ccs_multi_dx_tool_2015.csv ../process_mimic/mimic.3digitICD9.seqs ../process_mimic/mimic.3digitICD9.types tree</p>
+<h2 id="嵌入向量-1"><a href="#嵌入向量-1" class="headerlink" title="嵌入向量"></a>嵌入向量</h2><p>基于co-occurrence的算法：word2vecorGloVe，这里使用GloVe。</p>
+<p>create_glove_comap.py：生成诊断编码和其祖先的co-occurrence matrix，以字典{(731, 154): 2}的形式存储于cooccurrenceMap文件中。<br>python create_glove_comap.py <seqs file> <tree file prefix> <output path><br>python create_glove_comap.py ../build_trees/tree.seqs ../build_trees/tree</p>
+<p>glove.py：<br>python glove.py <co-occurrence file> <tree file prefix> <output path><br>python glove.py cooccurrenceMap.pk ../build_trees/tree embedding</p>
+<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>为了更好的性能和简单的分析，建议使用由process_mimic.py生成的3digitICD9.seqs文件作为训练标签，而不是使用seqs文件同时作为训练特征和训练标签。</p>
+<p>gram.py：<br>python gram.py <seqs file> &lt;3digitICD9.seqs file&gt; <tree file prefix> <output path><br>    更新后   由process_mimic.py生成</p>
+<p>python gram.py <seqs file> &lt;3digitICD9.seqs file&gt; <tree file prefix> <output path> –embed_file <embedding path> –embed_size <embedding dimension></p>
+<p>python gram.py ../build_trees/tree.seqs ../process_mimic/mimic.3digitICD9.seqs ../build_trees/tree output –embed_file ../train_embedding/embedding.49.npz –embed_size 128</p>
+</div><div class="tags"><a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><i class="fa fa-tag"></i>深度学习</a><a href="/tags/%E5%8C%BB%E7%96%97%E5%81%A5%E5%BA%B7/"><i class="fa fa-tag"></i>医疗健康</a></div><div class="post-nav"><a class="next" href="/2020/09/17/birthday/">生日</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://example.com/2021/05/10/gram/';
+    this.page.identifier = '2021/05/10/gram/';
+    this.page.title = 'GRAM：基于知识图谱的表示学习';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//www-irislxxy-com.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//www-irislxxy-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://www-irislxxy-com.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B8%B8%E6%88%8F/">游戏</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 15px;">随笔</a> <a href="/tags/%E6%B8%B8%E6%88%8F/" style="font-size: 15px;">游戏</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">深度学习</a> <a href="/tags/%E5%8C%BB%E7%96%97%E5%81%A5%E5%BA%B7/" style="font-size: 15px;">医疗健康</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://blog.luyuanhao.com/" title="陆老师" target="_blank">陆老师</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">IRIS.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
